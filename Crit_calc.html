@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Crit Calculator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 13px;
+            padding: 10px;
+            max-width: 1400px;
+            margin: 0 auto;
+            background: #1a1f2e;
+            color: #e0e6ed;
+        }
+        
+        .container {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 18px;
+        }
+        
+        .section {
+            background: #262d3e;
+            padding: 12px;
+            border-radius: 12px;
+            border: none;
+        }
+        
+        h3 {
+            font-size: 11px;
+            margin-bottom: 10px;
+            color: #6b7280;
+            border-bottom: none;
+            padding-bottom: 0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+        
+        .control-group {
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        label {
+            font-size: 13px;
+            color: #e0e6ed;
+            font-weight: 500;
+        }
+        
+        select, input[type="number"] {
+            padding: 12px;
+            font-size: 16px;
+            border: none;
+            border-radius: 10px;
+            width: 120px;
+            background: #1a1f2e;
+            color: #e0e6ed;
+        }
+        
+        select {
+            width: 100%;
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23e0e6ed' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            padding-right: 35px;
+        }
+        
+        select:focus, input[type="number"]:focus {
+            outline: 2px solid #fea23a;
+            outline-offset: 2px;
+        }
+        
+        .button-control {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn {
+            width: 30px;
+            height: 30px;
+            border: none;
+            background: #1a1f2e;
+            color: #e0e6ed;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 8px;
+        }
+        
+        .btn:hover {
+            background: #2a2f3e;
+        }
+        
+        .btn:active {
+            background: #323744;
+        }
+        
+        .value-display {
+            width: 100px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 14px;
+            color: #e0e6ed;
+        }
+        
+        .ring-option {
+            padding: 8px 14px;
+            border: none;
+            cursor: pointer;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            min-width: 50px;
+            text-align: center;
+            transition: all 0.2s ease;
+            background: #1a1f2e;
+            color: #9ca3af;
+        }
+        
+        .ring-option:hover {
+            background: #2a2f3e;
+        }
+        
+        .ring-option.active {
+            transform: none;
+        }
+        
+        .ring-blue.active { background: #086ad2; color: white; }
+        .ring-purple.active { background: #8210d3; color: white; }
+        .ring-yellow.active { background: #fea23a; color: #1a1f2e; }
+        .ring-none.active { background: #4a4d5a; color: white; }
+        
+        .ring-buttons {
+            display: flex;
+            gap: 6px;
+        }
+        
+        .gauge-container {
+            margin-top: 15px;
+            padding: 12px;
+            background: #1a1f2e;
+            border-radius: 12px;
+            border: none;
+        }
+        
+        .gauge-label {
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 13px;
+            color: #e0e6ed;
+        }
+        
+        .gauge-bar {
+            height: 35px;
+            background: #0f1419;
+            border-radius: 10px;
+            position: relative;
+            overflow: hidden;
+            border: none;
+        }
+        
+        .gauge-fill {
+            height: 100%;
+            background: linear-gradient(to right, #ff6b6b, #ffa500, #4ade80);
+            position: absolute;
+            left: 0;
+            top: 0;
+            transition: width 0.3s ease;
+            border-radius: 10px;
+        }
+        
+        .gauge-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-weight: bold;
+            color: white;
+            text-shadow: 1px 1px 3px black;
+            font-size: 15px;
+        }
+        
+        .total-display {
+            font-size: 20px;
+            font-weight: 600;
+            text-align: center;
+            padding: 20px;
+            background: #262d3e;
+            border-radius: 12px;
+            margin-top: 10px;
+            border: none;
+            color: #9ca3af;
+            letter-spacing: 0.5px;
+        }
+        
+        .total-display span {
+            color: #fea23a;
+            font-size: 48px;
+            font-weight: 700;
+            display: block;
+            margin-top: 5px;
+        }
+        
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            padding: 10px;
+            border-radius: 8px;
+            transition: background 0.2s ease;
+            font-weight: 500;
+        }
+        
+        .checkbox-label:hover {
+            background: #1a1f2e;
+        }
+        
+        input[type="checkbox"] {
+            cursor: pointer;
+            width: 22px;
+            height: 22px;
+            accent-color: #fea23a;
+            border-radius: 6px;
+            appearance: none;
+            background: #1a1f2e;
+            border: 2px solid #4a4d5a;
+            position: relative;
+            transition: all 0.2s ease;
+        }
+        
+        input[type="checkbox"]:checked {
+            background: #fea23a;
+            border-color: #fea23a;
+        }
+        
+        input[type="checkbox"]:checked::after {
+            content: '';
+            position: absolute;
+            left: 6px;
+            top: 2px;
+            width: 5px;
+            height: 10px;
+            border: solid #1a1f2e;
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
+        }
+        
+        input[type="checkbox"]:focus {
+            outline: 2px solid #fea23a;
+            outline-offset: 2px;
+        }
+        
+        .diamond-container {
+            display: flex;
+            gap: 4px;
+            align-items: center;
+            justify-content: center;
+            width: 100px;
+        }
+        
+        .diamond {
+            width: 16px;
+            height: 16px;
+            background: #1a1f2e;
+            border: 2px solid #4a4d5a;
+            transform: rotate(45deg);
+            transition: all 0.2s ease;
+        }
+        
+        .diamond.filled {
+            background: #8d3a08;
+            border-color: #8d3a08;
+        }
+    </style>
+</head>
+<body>
+    
+    <div class="container">
+        <!-- Column 1 -->
+        <div>
+            <div class="section">
+                <h3>Class</h3>
+                <div class="control-group">
+                    <label for="classSelect"><strong>Class:&nbsp</strong></label>
+                    <select id="classSelect" onchange="updateClassUI(); updateTotal();"></select>
+                </div>
+                
+                <div id="scalingContainer" style="display:none; margin-top:10px;">
+                    <div class="control-group">
+                        <label id="scalingLabel"></label>
+                        <input type="number" id="scalingInput" value="0" oninput="updateTotal()">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="section" style="margin-top:15px;">
+                <h3>Positional</h3>
+                <label class="checkbox-label">
+                    <input type="checkbox" id="backAttack" onchange="updateTotal()">
+                    <strong>Back attack</strong> (+10)
+                </label>
+            </div>
+            
+            <div class="section" style="margin-top:15px;">
+                <h3>Crit Synergy</h3>
+                <div class="control-group">
+                    <label><strong>Count yourself in:</strong></label>
+                    <div class="button-control">
+                        <button class="btn" onclick="adjustValue('Crit_syn', -1)">-</button>
+                        <span class="value-display" id="Crit_syn_display">0</span>
+                        <button class="btn" onclick="adjustValue('Crit_syn', 1)">+</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="section" style="margin-top:15px;">
+                <h3>Bracelets & Rings</h3>
+                <div class="control-group">
+                    <label><strong>Bracelet:</strong></label>
+                    <input type="number" id="Bracelet" value="0" step="0.01" oninput="updateTotal()" style="width:80px;">
+                </div>
+                
+                <div class="control-group" style="margin-top:8px;">
+                    <label><strong>Ring 1:</strong></label>
+                    <div class="ring-buttons" id="Ring1_buttons"></div>
+                </div>
+                
+                <div class="control-group" style="margin-top:8px;">
+                    <label><strong>Ring 2:</strong></label>
+                    <div class="ring-buttons" id="Ring2_buttons"></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Column 2 -->
+        <div>
+            <div class="section">
+                <h3>Ark Passive</h3>
+                <div class="control-group">
+                    <label><strong>Keen sense:</strong></label>
+                    <div class="button-control">
+                        <button class="btn" onclick="adjustValue('Keen_sense', -1)">-</button>
+                        <span class="value-display" id="Keen_sense_display">0</span>
+                        <button class="btn" onclick="adjustValue('Keen_sense', 1)">+</button>
+                    </div>
+                </div>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 8px;">
+                    <div>
+                        <div style="display: flex; flex-direction: column; gap: 5px;">
+                            <label style="font-size: 11px;"><strong>Zealous:</strong></label>
+                            <div class="button-control">
+                                <button class="btn" onclick="adjustValue('Zealous', -1)">-</button>
+                                <span class="value-display" id="Zealous_display">0</span>
+                                <button class="btn" onclick="adjustValue('Zealous', 1)">+</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <div style="display: flex; flex-direction: column; gap: 5px;">
+                            <label style="font-size: 11px;">Strike:</label>
+                            <div class="button-control">
+                                <button class="btn" onclick="adjustValue('Strike', -1)">-</button>
+                                <span class="value-display" id="Strike_display">0</span>
+                                <button class="btn" onclick="adjustValue('Strike', 1)">+</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <label class="checkbox-label" style="margin-top:8px;">
+                    <input type="checkbox" id="Master" onchange="updateTotal()">
+                    <strong>Master</strong> (+7)
+                </label>
+            </div>
+            
+            <div class="section" style="margin-top:15px;">
+                <h3>Engravings</h3>
+
+                <div class="control-group">
+                    <label><strong>Adrenaline:</strong></label>
+                    <div class="button-control">
+                        <button class="btn" onclick="adjustEngraving('Adrenaline', -1)">-</button>
+                        <div class="value-display" id="Adrenaline_display"></div>
+                        <button class="btn" onclick="adjustEngraving('Adrenaline', 1)">+</button>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label><strong>Precise Dagger:</strong></label>
+                    <div class="button-control">
+                        <button class="btn" onclick="adjustEngraving('PreciseDagger', -1)">-</button>
+                        <div class="value-display" id="PreciseDagger_display"></div>
+                        <button class="btn" onclick="adjustEngraving('PreciseDagger', 1)">+</button>
+                    </div>
+                </div>
+                
+            </div>
+            
+            <div class="section" style="margin-top:15px;">
+                <h3>Crit Stat</h3>
+                <div class="control-group">
+                    <label><strong>Crit (stat):</strong></label>
+                    <input type="number" id="Critique" min="0" max="1900" value="0" oninput="updateTotal()" style="width:100px;">
+                </div>
+                <div style="display: flex; gap: 8px; margin-top: 10px;">
+                    <button class="btn" onclick="adjustCritStat(-50)" style="width: 50%; border-radius: 8px; height: 35px;">-50</button>
+                    <button class="btn" onclick="adjustCritStat(50)" style="width: 50%; border-radius: 8px; height: 35px;">+50</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Column 3 -->
+        <div>
+            <div class="section">
+                <div class="total-display">
+                    Total: <span id="total">0.00</span>%
+                </div>
+                
+                <div class="gauge-container">
+                    <div class="gauge-label" id="gauge100_label">100%: 0 crit stat needed</div>
+                    <div class="gauge-bar">
+                        <div class="gauge-fill" id="gauge100_fill"></div>
+                        <div class="gauge-text" id="gauge100_text">0.00%</div>
+                    </div>
+                </div>
+                
+                <div class="gauge-container">
+                    <div class="gauge-label" id="gauge120_label">120% (blunt thorn cap): 0 crit stat needed</div>
+                    <div class="gauge-bar">
+                        <div class="gauge-fill" id="gauge120_fill"></div>
+                        <div class="gauge-text" id="gauge120_text">0.00%</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        
+const CLASSES = {
+            "No scaling": { baseBonus: 0, scaling: null },
+            "Aero Windfury": { 
+                baseBonus: 0, 
+                scaling: { 
+                    label: "Mvt Speed", 
+                    formula: function(value) { return 0.3 * value; } 
+                } 
+            },
+            "Artillerist Barrage": { baseBonus: 40, scaling: null },
+            "Berzerker BT": { 
+                baseBonus: 0, 
+                scaling: { 
+                    label: "Spec", 
+                    formula: function(value) { return 30 * (1 + (0.26 * value) / 699) } 
+                } 
+            },
+            "Berzerker Mayhem": { baseBonus: 30, scaling: null },
+            "Breaker BK": { baseBonus: 15, scaling: null },
+            "Destroyer GT": { baseBonus: 30, scaling: null },
+            "Destroyer RH": { baseBonus: 18, scaling: null },
+            "GuardianKnight DR": { baseBonus: 15, scaling: null },
+            "GuardianKnight HS": { baseBonus: 20, scaling: null },
+            "Gunlancer red": { baseBonus: 15, scaling: null },
+            "Gunslinger Peacemaker": { baseBonus: 15, scaling: null },
+            "Gunslinger TTH": { baseBonus: 45, scaling: null },
+            "Reaper Hinger": { baseBonus: 23, scaling: null },
+            "Reaper Lunar": { baseBonus: 10, scaling: null },
+            "Shadowhunter DI": { baseBonus: 30, scaling: null },
+            "Sharpshooter LC": { baseBonus: 30, scaling: null },
+            "Slayer Predator": { baseBonus: 30, scaling: null },
+            "Slayer Punisher": { baseBonus: 30, scaling: null },
+            "Sorceress Igniter": { baseBonus: 30, scaling: null },
+            "Souleater FM": { baseBonus: 34, scaling: null },
+            "Summoner MS": { baseBonus: 16, scaling: null },
+            "Wildsoul Ferality": { baseBonus: 30, scaling: null }
+            };
+        
+        const ENGRAVINGS = {
+            'Adrenaline': [
+                { label: 'None', value: 0 },
+                { label: 'Legendary', value: 14 },
+                { label: 'Relic 1', value: 15.5 },
+                { label: 'Relic 2', value: 17 },
+                { label: 'Relic 3', value: 18.5 },
+                { label: 'Relic 4', value: 20 }
+            ],
+            'PreciseDagger': [
+                { label: 'None', value: 0 },
+                { label: 'Legendary', value: 18 },
+                { label: 'Relic 1', value: 18.75 },
+                { label: 'Relic 2', value: 19.5 },
+                { label: 'Relic 3', value: 20.25 },
+                { label: 'Relic 4', value: 21 }
+            ]
+        };
+        
+        let state = {
+            Crit_syn: 0,
+            Keen_sense: 0,
+            Zealous: 0,
+            Strike: 0,
+            Ring1: 0,
+            Ring2: 0,
+            PreciseDagger: 0,
+            Adrenaline: 0
+        };
+        
+        function initClasses() {
+            const select = document.getElementById("classSelect");
+            for (let className in CLASSES) {
+                let option = document.createElement("option");
+                option.value = className;
+                option.textContent = className;
+                select.appendChild(option);
+            }
+        }
+        
+        function initRingButtons() {
+            const rings = ['Ring1', 'Ring2'];
+            const options = [
+                { value: 0, label: '0', color: 'none' },
+                { value: 0.4, label: '0.4', color: 'blue' },
+                { value: 0.95, label: '0.95', color: 'purple' },
+                { value: 1.55, label: '1.55', color: 'yellow' }
+            ];
+            
+            rings.forEach(ringId => {
+                const container = document.getElementById(ringId + '_buttons');
+                options.forEach(opt => {
+                    const btn = document.createElement('div');
+                    btn.className = 'ring-option ring-' + opt.color;
+                    if (opt.value === 0) btn.classList.add('active');
+                    btn.textContent = opt.label;
+                    btn.onclick = () => setRing(ringId, opt.value, btn);
+                    container.appendChild(btn);
+                });
+            });
+        }
+        
+        function setRing(ringId, value, clickedBtn) {
+            state[ringId] = value;
+            const container = document.getElementById(ringId + '_buttons');
+            container.querySelectorAll('.ring-option').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            clickedBtn.classList.add('active');
+            updateTotal();
+        }
+        
+        function updateClassUI() {
+            const selected = document.getElementById("classSelect").value;
+            const scalingData = CLASSES[selected].scaling;
+            const container = document.getElementById("scalingContainer");
+            const label = document.getElementById("scalingLabel");
+            
+            if (scalingData) {
+                container.style.display = "block";
+                label.textContent = scalingData.label + ":";
+            } else {
+                container.style.display = "none";
+                document.getElementById("scalingInput").value = 0;
+            }
+        }
+        
+        function adjustValue(id, delta) {
+            const limits = {
+                'Crit_syn': { min: 0, max: 3 },
+                'Keen_sense': { min: 0, max: 2 },
+                'Zealous': { min: 0, max: 2 },
+                'Strike': { min: 0, max: 2 }
+            };
+            
+            state[id] = Math.max(limits[id].min, Math.min(limits[id].max, state[id] + delta));
+            
+            if (id === 'Strike' || id === 'Zealous') {
+                if (state.Strike + state.Zealous > 2) {
+                    if (id === 'Strike') {
+                        state.Zealous = 2 - state.Strike;
+                    } else {
+                        state.Strike = 2 - state.Zealous;
+                    }
+                }
+                document.getElementById('Strike_display').textContent = state.Strike;
+                document.getElementById('Zealous_display').textContent = state.Zealous;
+            }
+            
+            document.getElementById(id + '_display').textContent = state[id];
+            updateTotal();
+        }
+        
+        function adjustEngraving(id, delta) {
+            const options = ENGRAVINGS[id];
+            let currentIndex = state[id];
+            currentIndex = Math.max(0, Math.min(options.length - 1, currentIndex + delta));
+            state[id] = currentIndex;
+            
+            const displayElement = document.getElementById(id + '_display');
+            displayElement.innerHTML = '';
+            
+            if (currentIndex === 0) {
+                // Show "None" as text
+                displayElement.className = 'value-display';
+                displayElement.textContent = 'None';
+            } else {
+                // Show diamonds: Legendary = 0 filled, Relic 1 = 1 filled, etc.
+                displayElement.className = 'value-display diamond-container';
+                const filledCount = currentIndex - 1; // Legendary=0, Relic1=1, Relic2=2, etc.
+                const maxDiamonds = 4;
+                
+                for (let i = 0; i < maxDiamonds; i++) {
+                    const diamond = document.createElement('div');
+                    diamond.className = 'diamond';
+                    if (i < filledCount) {
+                        diamond.classList.add('filled');
+                    }
+                    displayElement.appendChild(diamond);
+                }
+            }
+            
+            updateTotal();
+        }
+        
+        function adjustCritStat(delta) {
+            const input = document.getElementById('Critique');
+            let currentValue = parseFloat(input.value) || 0;
+            currentValue = Math.max(0, Math.min(1900, currentValue + delta));
+            input.value = currentValue;
+            updateTotal();
+        }
+        
+        function updateTotal() {
+            let totalWithoutStat = 0;
+            
+            const selectedClass = document.getElementById("classSelect").value;
+            totalWithoutStat += CLASSES[selectedClass].baseBonus;
+            
+            const scalingData = CLASSES[selectedClass].scaling;
+            if (scalingData) {
+                let scalingValue = parseFloat(document.getElementById("scalingInput").value) || 0;
+                totalWithoutStat += scalingData.formula(scalingValue);
+            }
+            
+            totalWithoutStat += parseFloat(document.getElementById("Bracelet").value) || 0;
+            totalWithoutStat += state.Ring1;
+            totalWithoutStat += state.Ring2;
+            
+            totalWithoutStat += state.Keen_sense * 4;
+            totalWithoutStat += state.Zealous * 12;
+            totalWithoutStat += state.Strike * 10;
+            totalWithoutStat += state.Crit_syn * 10;
+            
+            if (document.getElementById("Master").checked) {
+                totalWithoutStat += 7;
+            }
+            
+            if (document.getElementById("backAttack").checked) {
+                totalWithoutStat += 10;
+            }
+            
+            totalWithoutStat += ENGRAVINGS.PreciseDagger[state.PreciseDagger].value;
+            totalWithoutStat += ENGRAVINGS.Adrenaline[state.Adrenaline].value;
+            
+            let critique = parseFloat(document.getElementById("Critique").value) || 0;
+            if (critique < 0) critique = 0;
+            if (critique > 1900) critique = 1900;
+            
+            let total = totalWithoutStat + (critique * 0.0342);
+            total = Math.round(total * 100) / 100;
+            
+            document.getElementById("total").textContent = total.toFixed(2);
+            
+            updateGauges(total, totalWithoutStat);
+        }
+        
+        function updateGauges(currentTotal, totalWithoutStat) {
+            // 100% gauge
+            const critFor100 = Math.ceil((100 - totalWithoutStat) / 0.0342);
+            const gauge100Fill = document.getElementById('gauge100_fill');
+            const gauge100Text = document.getElementById('gauge100_text');
+            const gauge100Label = document.getElementById('gauge100_label');
+            
+            if (critFor100 >= 0 && critFor100 <= 1850) {
+                gauge100Label.textContent = `100%: ${critFor100} crit stat needed`;
+            } else if (critFor100 < 0) {
+                gauge100Label.textContent = `100%: Already reached!`;
+            } else {
+                gauge100Label.textContent = `100%: Cannot reach`;
+            }
+            
+            const percent100 = Math.min(100, Math.max(0, currentTotal));
+            gauge100Fill.style.width = percent100 + '%';
+            gauge100Text.textContent = currentTotal.toFixed(2) + '%';
+            
+            // 120% gauge
+            const critFor120 = Math.ceil((120 - totalWithoutStat) / 0.0342);
+            const gauge120Fill = document.getElementById('gauge120_fill');
+            const gauge120Text = document.getElementById('gauge120_text');
+            const gauge120Label = document.getElementById('gauge120_label');
+            
+            if (critFor120 >= 0 && critFor120 <= 1850) {
+                gauge120Label.textContent = `120% (blunt thorn cap): ${critFor120} crit stat needed`;
+            } else if (critFor120 < 0) {
+                gauge120Label.textContent = `120% (blunt thorn cap): Already reached!`;
+            } else {
+                gauge120Label.textContent = `120% (blunt thorn cap): Cannot reach`;
+            }
+            
+            const percent120 = Math.min(100, Math.max(0, (currentTotal / 120) * 100));
+            gauge120Fill.style.width = percent120 + '%';
+            gauge120Text.textContent = currentTotal.toFixed(2) + '%';
+        }
+        
+        initClasses();
+        initRingButtons();
+        updateClassUI();
+        
+        // Initialize diamond displays
+        adjustEngraving('Adrenaline', 0);
+        adjustEngraving('PreciseDagger', 0);
+        
+        updateTotal();
+        
+    </script>
+    
+</body>
+</html>
